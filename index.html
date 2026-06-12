@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<title>Friho TV — مباريات اليوم بث مباشر مجاني HD</title>
+<meta name="description" content="شاهد مباريات اليوم بث مباشر مجاني بجودة HD على Friho TV. دوري أبطال أوروبا، البريميرليغ، الليغا، كأس العالم وأكثر.">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<meta name="theme-color" content="#0a0f1e">
+
+<!-- Open Graph -->
+<meta property="og:type"        content="website">
+<meta property="og:title"       content="Friho TV — مباريات اليوم بث مباشر HD">
+<meta property="og:description" content="شاهد مباريات اليوم على Friho TV بجودة HD بدون اشتراك.">
+<meta property="og:url"         content="https://friho.tv/">
+<meta property="og:site_name"   content="Friho TV">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<!-- Favicon SVG inline -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0f1e'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-size='36' fill='%2300d4ff'%3E⚽%3C/text%3E%3C/svg%3E">
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --c-bg:       #0a0f1e;
+  --c-bg2:      #0d1426;
+  --c-card:     #111827;
+  --c-card2:    #161f30;
+  --c-border:   rgba(255,255,255,0.08);
+  --c-accent:   #00d4ff;
+  --c-accent2:  #0099cc;
+  --c-gold:     #f5a623;
+  --c-red:      #ef4444;
+  --c-green:    #22c55e;
+  --c-text:     #f1f5f9;
+  --c-muted:    #94a3b8;
+  --c-live:     #ff3b5c;
+  --radius:     14px;
+  --radius-sm:  8px;
+  --shadow:     0 4px 24px rgba(0,0,0,0.4);
+  --transition: 0.2s ease;
+}
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Cairo', 'Segoe UI', Arial, sans-serif;
+  background-color: var(--c-bg);
+  color: var(--c-text);
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Subtle animated grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ═══════════════════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════════════════ */
+.page-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 clamp(12px, 3vw, 28px);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NAVBAR
+═══════════════════════════════════════════════════════════ */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--c-border);
+  margin-bottom: 20px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--c-accent);
+  letter-spacing: -0.5px;
+}
+
+.nav-logo .logo-icon {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.nav-logo .logo-sub {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-muted);
+  display: block;
+  line-height: 1;
+}
+
+.nav-live-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255,59,92,0.15);
+  border: 1px solid rgba(255,59,92,0.3);
+  color: var(--c-live);
+  font-size: 12px;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+
+.nav-live-badge::before {
+  content: '';
+  width: 7px; height: 7px;
+  background: var(--c-live);
+  border-radius: 50%;
+  animation: pulse-dot 1.4s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.6); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HERO STRIP
+═══════════════════════════════════════════════════════════ */
+.hero {
+  background: linear-gradient(135deg, #0d1f3c 0%, #0a1628 60%, rgba(0,212,255,0.08) 100%);
+  border: 1px solid rgba(0,212,255,0.18);
+  border-radius: var(--radius);
+  padding: clamp(20px, 4vw, 40px) clamp(20px, 5vw, 56px);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  overflow: hidden;
+  position: relative;
+}
+
+.hero::after {
+  content: '⚽';
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-15deg);
+  font-size: clamp(80px, 16vw, 180px);
+  opacity: 0.05;
+  pointer-events: none;
+  filter: blur(2px);
+}
+
+.hero-text h1 {
+  font-size: clamp(22px, 4vw, 40px);
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.hero-text h1 span { color: var(--c-accent); }
+
+.hero-text p {
+  color: var(--c-muted);
+  font-size: clamp(13px, 1.8vw, 16px);
+  max-width: 480px;
+}
+
+.hero-stats {
+  display: flex;
+  gap: clamp(12px, 3vw, 28px);
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  text-align: center;
+  min-width: 70px;
+}
+
+.stat-num {
+  font-size: clamp(22px, 4vw, 38px);
+  font-weight: 900;
+  color: var(--c-accent);
+  line-height: 1;
+  display: block;
+}
+
+.stat-lbl {
+  font-size: 11px;
+  color: var(--c-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DATE FILTER BAR
+═══════════════════════════════════════════════════════════ */
+.date-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.date-bar::-webkit-scrollbar { display: none; }
+
+.date-btn {
+  flex-shrink: 0;
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  color: var(--c-muted);
+  font-family: 'Cairo', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.date-btn:hover {
+  background: var(--c-card2);
+  color: var(--c-text);
+}
+
+.date-btn.active {
+  background: var(--c-accent);
+  color: #000;
+  border-color: var(--c-accent);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SECTION HEADER
+═══════════════════════════════════════════════════════════ */
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 10px;
+}
+
+.section-title {
+  font-size: clamp(16px, 2.5vw, 22px);
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-title::before {
+  content: '';
+  width: 4px;
+  height: 22px;
+  background: var(--c-accent);
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.match-count {
+  background: var(--c-card2);
+  border: 1px solid var(--c-border);
+  color: var(--c-muted);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MATCHES GRID
+═══════════════════════════════════════════════════════════ */
+.matches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(clamp(260px, 28vw, 340px), 1fr));
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+/* ── Match Card ── */
+.match-card {
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.match-card.clickable {
+  cursor: pointer;
+}
+
+.match-card.clickable:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0,212,255,0.35);
+  box-shadow: 0 8px 32px rgba(0,212,255,0.1);
+}
+
+.match-card.finished {
+  opacity: 0.72;
+}
+
+/* glow top line for live */
+.match-card.live-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--c-live), transparent);
+}
+
+/* ── Card: League row ── */
+.card-league {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.league-logo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.league-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-muted);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-badge {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 9px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  letter-spacing: 0.3px;
+}
+
+.status-live     { background: rgba(255,59,92,0.18); color: var(--c-live); border: 1px solid rgba(255,59,92,0.3); }
+.status-upcoming { background: rgba(0,212,255,0.12); color: var(--c-accent); border: 1px solid rgba(0,212,255,0.2); }
+.status-finished { background: rgba(148,163,184,0.12); color: var(--c-muted); border: 1px solid rgba(148,163,184,0.2); }
+
+/* ── Card: Teams row ── */
+.card-teams {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.team-logo {
+  width: clamp(36px, 6vw, 48px);
+  height: clamp(36px, 6vw, 48px);
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.team-name {
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.3;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  width: 100%;
+}
+
+.card-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  width: 60px;
+}
+
+.score-display {
+  font-size: clamp(18px, 3vw, 24px);
+  font-weight: 900;
+  color: var(--c-text);
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.time-display {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-accent);
+  white-space: nowrap;
+}
+
+/* ── Card: Watch button ── */
+.card-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: linear-gradient(135deg, var(--c-accent) 0%, var(--c-accent2) 100%);
+  color: #000;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  transition: opacity var(--transition);
+  font-family: 'Cairo', sans-serif;
+}
+
+.match-card.clickable:hover .card-action {
+  opacity: 0.9;
+}
+
+.card-action-finished {
+  background: var(--c-card2);
+  color: var(--c-muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--c-border);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LOADING / ERROR / EMPTY
+═══════════════════════════════════════════════════════════ */
+.state-box {
+  text-align: center;
+  padding: clamp(32px, 8vw, 80px) 20px;
+  color: var(--c-muted);
+}
+
+.state-box .icon {
+  font-size: clamp(48px, 10vw, 72px);
+  display: block;
+  margin-bottom: 16px;
+}
+
+.state-box h3 {
+  font-size: clamp(16px, 2.5vw, 22px);
+  font-weight: 800;
+  color: var(--c-text);
+  margin-bottom: 8px;
+}
+
+.state-box p {
+  font-size: 14px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba(0,212,255,0.2);
+  border-top-color: var(--c-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.btn-retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--c-card2);
+  border: 1px solid var(--c-border);
+  color: var(--c-text);
+  font-family: 'Cairo', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 10px 22px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 16px;
+}
+
+.btn-retry:hover { background: var(--c-card); border-color: var(--c-accent); color: var(--c-accent); }
+
+/* ═══════════════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════════════ */
+.site-footer {
+  border-top: 1px solid var(--c-border);
+  padding: 20px 0;
+  margin-top: 16px;
+  text-align: center;
+  color: var(--c-muted);
+  font-size: 13px;
+}
+
+.site-footer a { color: var(--c-accent); }
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .hero { text-align: center; justify-content: center; }
+  .hero::after { display: none; }
+  .hero-stats { justify-content: center; }
+  .matches-grid { grid-template-columns: 1fr; gap: 10px; }
+  .navbar { justify-content: center; }
+}
+
+@media (max-width: 400px) {
+  .card-teams { flex-direction: row; }
+  .team-logo { width: 32px; height: 32px; }
+}
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/" class="nav-logo">
+      <span class="logo-icon">⚽</span>
+      <span>
+        Friho TV
+        <span class="logo-sub">بث مباشر مجاني</span>
+      </span>
+    </a>
+    <span class="nav-live-badge">LIVE</span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-text">
+      <h1>مباريات اليوم<br><span>بث مباشر مجاني</span></h1>
+      <p>شاهد جميع المباريات الآن بجودة HD بدون اشتراك ولا تسجيل</p>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num" id="stat-total">—</span>
+        <span class="stat-lbl">مباراة</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" id="stat-live">—</span>
+        <span class="stat-lbl">مباشر</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">HD</span>
+        <span class="stat-lbl">جودة</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Date filter -->
+  <div class="date-bar" id="date-bar">
+    <!-- filled by JS -->
+  </div>
+
+  <!-- Section header -->
+  <div class="section-head">
+    <h2 class="section-title">جدول المباريات</h2>
+    <span class="match-count" id="match-count-badge"></span>
+  </div>
+
+  <!-- Matches -->
+  <main id="matches-wrap">
+    <div class="state-box" id="state-loading">
+      <div class="spinner"></div>
+      <h3>جاري تحميل المباريات…</h3>
+      <p>يرجى الانتظار لحظة</p>
+    </div>
+    <div class="state-box" id="state-error" style="display:none">
+      <span class="icon">⚠️</span>
+      <h3>تعذر تحميل المباريات</h3>
+      <p>تحقق من اتصالك بالإنترنت وحاول مجدداً</p>
+      <button class="btn-retry" onclick="loadMatches()">↻ إعادة المحاولة</button>
+    </div>
+    <div class="state-box" id="state-empty" style="display:none">
+      <span class="icon">⚽</span>
+      <h3>لا توجد مباريات اليوم</h3>
+      <p>لا توجد مباريات مجدولة في هذا اليوم، تحقق من يوم آخر.</p>
+    </div>
+    <div class="matches-grid" id="matches-grid" style="display:none"></div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>© <span id="yr"></span> Friho TV — بث مباشر مجاني بجودة HD</p>
+  </footer>
+
+</div><!-- /page-wrap -->
+
+<script>
+'use strict';
+
+// ── Config ───────────────────────────────────────────────────
+const CFG = {
+  API_BASE:        'https://ws.kora-api.space/',
+  TEAM_IMG_BASE:   'https://cdn.kora-api.space/uploads/team/',
+  LEAGUE_IMG_BASE: 'https://cdn.kora-api.space/uploads/league/',
+};
+
+// تحميل config من الخادم المحلي إذا كان يعمل
+(async () => {
+  try {
+    const r = await fetch('/api/config', { cache: 'no-store' });
+    if (r.ok) {
+      const d = await r.json();
+      if (d.TEAM_IMG_BASE)   CFG.TEAM_IMG_BASE   = d.TEAM_IMG_BASE;
+      if (d.LEAGUE_IMG_BASE) CFG.LEAGUE_IMG_BASE = d.LEAGUE_IMG_BASE;
+    }
+  } catch {}
+})();
+
+// ── Utilities ────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+
+function isoDate(d = new Date()) { return d.toISOString().slice(0, 10); }
+
+function addDays(dateStr, n) {
+  const d = new Date(dateStr + 'T12:00:00Z');
+  d.setUTCDate(d.getUTCDate() + n);
+  return isoDate(d);
+}
+
+function formatDateAr(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00Z');
+  return d.toLocaleDateString('ar-MA', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
+}
+
+function getMatchStatus(status) {
+  switch (parseInt(status)) {
+    case 1:  return { text: '● مباشر', cls: 'status-live' };
+    case 2:  return { text: 'انتهت',   cls: 'status-finished' };
+    case 3:  return { text: 'قادمة',   cls: 'status-upcoming' };
+    default: return { text: 'قادمة',   cls: 'status-upcoming' };
+  }
+}
+
+function fallbackLogo() {
+  return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Crect fill='%230d1426' width='60' height='60' rx='8'/%3E%3Ctext x='30' y='40' text-anchor='middle' fill='%2300d4ff' font-size='28'%3E⚽%3C/text%3E%3C/svg%3E`;
+}
+
+function parseJsonSafe(text) {
+  const oi = text.indexOf('{'), ai = text.indexOf('[');
+  let start = -1;
+  if (oi >= 0 && ai >= 0) start = Math.min(oi, ai);
+  else start = Math.max(oi, ai);
+  if (start < 0) throw new Error('no JSON');
+  return JSON.parse(text.slice(start));
+}
+
+// ── Fetch Matches ─────────────────────────────────────────────
+async function fetchMatchesForDate(date) {
+  const t = Date.now();
+  const endpoints = [];
+
+  if (location.protocol !== 'file:') {
+    endpoints.push(`${location.origin}/api/matches/${date}/1?t=${t}`);
+  }
+  endpoints.push(`${CFG.API_BASE}api/matches/${date}/1?t=${t}`);
+
+  for (const url of endpoints) {
+    try {
+      const r = await fetch(url, { cache: 'no-store' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return parseJsonSafe(await r.text());
+    } catch {}
+  }
+  throw new Error('all sources failed');
+}
+
+// ── Build card HTML ───────────────────────────────────────────
+function buildCard(m) {
+  const s       = getMatchStatus(m.status);
+  const isLive  = m.status == 1;
+  const isDone  = m.status == 2;
+  const canWatch= m.status == 1 || m.status == 3 || m.has_channels == 1;
+  const fb      = fallbackLogo();
+  const link    = `stream.html?m=${m.id}&lang=ar`;
+
+  const teamImg = (src, name) =>
+    `<img src="${CFG.TEAM_IMG_BASE}${src}" alt="${name}" class="team-logo" loading="lazy"
+          onerror="this.src='${fb}'">`;
+  const leagueImg = `<img src="${CFG.LEAGUE_IMG_BASE}${m.league_logo}" alt="" class="league-logo"
+       loading="lazy" onerror="this.style.display='none'">`;
+
+  const center = (isLive || isDone)
+    ? `<div class="card-center"><span class="score-display">${(m.score && m.score !== '-') ? m.score : '0 - 0'}</span></div>`
+    : `<div class="card-center"><span class="time-display">⏰ ${m.time}</span></div>`;
+
+  const action = isDone
+    ? `<div class="card-action-finished">انتهت المباراة</div>`
+    : canWatch
+      ? `<div class="card-action">▶ شاهد البث المباشر</div>`
+      : `<div class="card-action-finished">البث غير متاح بعد</div>`;
+
+  const cls = `match-card ${canWatch && !isDone ? 'clickable' : ''} ${isDone ? 'finished' : ''} ${isLive ? 'live-card' : ''}`;
+  const inner = `
+    <div class="card-league">
+      ${leagueImg}
+      <span class="league-name">${m.league || m.league_en}</span>
+      <span class="status-badge ${s.cls}">${s.text}</span>
+    </div>
+    <div class="card-teams">
+      <div class="team">
+        ${teamImg(m.home_logo, m.home_en)}
+        <span class="team-name">${m.home || m.home_en}</span>
+      </div>
+      ${center}
+      <div class="team">
+        ${teamImg(m.away_logo, m.away_en)}
+        <span class="team-name">${m.away || m.away_en}</span>
+      </div>
+    </div>
+    ${action}
+  `;
+
+  return canWatch && !isDone
+    ? `<a href="${link}" class="${cls}" aria-label="مشاهدة ${m.home || ''} ضد ${m.away || ''}">${inner}</a>`
+    : `<div class="${cls}">${inner}</div>`;
+}
+
+// ── Date bar ─────────────────────────────────────────────────
+let activeDate = isoDate();
+
+function buildDateBar() {
+  const bar = $('date-bar');
+  const today = isoDate();
+  const days = [-1, 0, 1, 2];
+  bar.innerHTML = days.map(offset => {
+    const d   = addDays(today, offset);
+    const lbl = offset === -1 ? 'أمس' : offset === 0 ? 'اليوم' : offset === 1 ? 'غداً' : formatDateAr(d);
+    return `<button class="date-btn ${d === activeDate ? 'active' : ''}"
+                    onclick="selectDate('${d}', this)">${lbl}</button>`;
+  }).join('');
+}
+
+function selectDate(date, btn) {
+  activeDate = date;
+  document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  loadMatches();
+}
+
+// ── Main load ─────────────────────────────────────────────────
+async function loadMatches() {
+  const grid   = $('matches-grid');
+  const loading = $('state-loading');
+  const error  = $('state-error');
+  const empty  = $('state-empty');
+  const badge  = $('match-count-badge');
+
+  grid.style.display   = 'none';
+  error.style.display  = 'none';
+  empty.style.display  = 'none';
+  loading.style.display = 'block';
+
+  try {
+    const data = await fetchMatchesForDate(activeDate);
+    const matches = data.matches || data;
+    loading.style.display = 'none';
+
+    if (!Array.isArray(matches) || matches.length === 0) {
+      empty.style.display = 'block';
+      badge.textContent = '0 مباراة';
+      $('stat-total').textContent = '0';
+      $('stat-live').textContent  = '0';
+      return;
+    }
+
+    const live  = matches.filter(m => m.status == 1).length;
+    const total = matches.length;
+
+    $('stat-total').textContent = total;
+    $('stat-live').textContent  = live;
+    badge.textContent = `${total} مباراة`;
+
+    grid.innerHTML     = matches.map(buildCard).join('');
+    grid.style.display = 'grid';
+  } catch (err) {
+    loading.style.display = 'none';
+    error.style.display   = 'block';
+    console.error(err);
+  }
+}
+
+// ── Init ──────────────────────────────────────────────────────
+$('yr').textContent = new Date().getFullYear();
+buildDateBar();
+loadMatches();
+
+// Auto-refresh every 60s for live scores
+setInterval(() => {
+  if (activeDate === isoDate()) loadMatches();
+}, 60000);
+</script>
+</body>
+</html>
