@@ -422,6 +422,11 @@
             return CONFIG.FALLBACK_FRAME_URLS[Math.floor(Math.random() * CONFIG.FALLBACK_FRAME_URLS.length)];
         };
 
+        const proxyUrl = (url) => {
+            if (!url) return url;
+            return `/api/proxy?url=${encodeURIComponent(url)}`;
+        };
+
         const fetchMatchData = async (matchId, lang) => {
             const timestamp = Date.now();
             const apiUrl = `${CONFIG.API_MATCHE_URL}api/matche/${encodeURIComponent(matchId)}/${lang}?t=${timestamp}`;
@@ -466,7 +471,7 @@
             if (type === 'hls') {
                 if (window.Clappr && typeof Clappr.Player === 'function') {
                     currentPlayer = new Clappr.Player({
-                        source: chLink,
+                        source: proxyUrl(chLink),
                         mimeType: 'application/x-mpegURL',
                         disableErrorScreen: true,
                         autoPlay: true,
@@ -481,7 +486,7 @@
                     video.controls = true;
                     video.autoplay = true;
                     video.playsInline = true;
-                    video.src = chLink;
+                    video.src = proxyUrl(chLink);
                     playerContainer.appendChild(video);
                 }
                 return;
@@ -500,7 +505,7 @@
 
             const directFrame = (type === 'landscape' || type === 'frame') && Number(channel.edge) === 0;
             if (directFrame) {
-                iframe.src = chLink;
+                iframe.src = proxyUrl(chLink);
             } else {
                 const t = Math.floor(Date.now() / 1000);
                 const params = new URLSearchParams({
@@ -509,7 +514,7 @@
                     token: getVisitorId(),
                     kt: String(t)
                 });
-                iframe.src = `${frameUrl}?${params.toString()}`;
+                iframe.src = proxyUrl(`${frameUrl}?${params.toString()}`);
             }
 
             playerContainer.appendChild(iframe);
@@ -621,5 +626,5 @@
             init();
         }
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0b2ca52f859164b',t:'MTc4MTM3MTQ4Mg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
