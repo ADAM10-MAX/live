@@ -1,0 +1,147 @@
+// Vercel Serverless Function — Proxy with custom Referer
+// Usage: /api/proxy?url=https://target-site.com/path
+
+export default async function handler(req, res) {
+  // 1. CORS & preflight
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  // 2. Get target URL
+  let targetUrl = req.query?.url;
+  if (!targetUrl) {
+    return res.status(400).json({ error: 'Missing ?url= parameter' });
+  }
+
+  try {
+    targetUrl = decodeURIComponent(targetUrl);
+  } catch (e) {
+    // Keep as-is if already decoded or malformed
+  }
+
+  // 3. Security tip (optional): restrict to allowed domains to prevent abuse
+  // const allowedHosts = ['kora-plus.mov', 'kora-api.top'];
+  // try {
+  //   const { hostname } = new URL(targetUrl);
+  //   if (!allowedHosts.some(h => hostname.includes(h))) {
+  //     return res.status(403).json({ error: 'Domain not allowed' });
+  //   }
+  // } catch {
+  //   return res.status(400).json({ error: 'Invalid URL' });
+  // }
+
+  // 4. Set the upstream Referer required by the source website
+  const REFERER = process.env.PROXY_REFERER || 'https://ws.kora-api.top/';
+  const USER_AGENT = req.headers['user-agent']
+    || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+
+  const fetchHeaders = {
+    'Referer': REFERER,
+    'User-Agent': USER_AGENT,
+    'Accept': req.headers['accept'] || '*/*',
+    'Accept-Language': 'en-US,en;q=0.9,ar;q=0.8',
+    'Origin': new URL(REFERER).origin,
+  };
+
+  // Forward Range header (important for video seeking / partial content)
+  if (req.headers['range']) {
+    fetchHeaders['Range'] = req.headers['range'];
+  }
+
+  try {
+    const response = await fetch(targetUrl, {
+      headers: fetchHeaders,
+      redirect: 'follow',
+    });
+
+    // 5. Set response status
+    res.status(response.status);
+
+    // 6. Forward safe headers (skip encoding/connection headers that Node manages)
+    const skipHeaders = ['content-encoding', 'transfer-encoding', 'connection', 'keep-alive'];
+    response.headers.forEach((value, key) => {
+      if (skipHeaders.includes(key.toLowerCase())) return;
+      try {
+        res.setHeader(key, value);
+      } catch (e) {
+        // Ignore headers Node.js considers invalid
+      }
+    });
+
+    const contentType = response.headers.get('content-type') || '';
+
+    // 7. M3U8 playlists: rewrite every URL inside so segments also pass through proxy
+    if (
+      contentType.includes('mpegurl') ||
+      contentType.includes('x-mpegurl') ||
+      targetUrl.endsWith('.m3u8') ||
+      targetUrl.endsWith('.m3u')
+    ) {
+      const text = await response.text();
+      const baseUrl = new URL(targetUrl);
+      const proto = req.headers['x-forwarded-proto'] || 'https';
+      const host = req.headers['host'];
+      const proxyBase = `${proto}://${host}/api/proxy?url=`;
+
+      const rewritten = text
+        .split('\n')
+        .map((line) => {
+          const trimmed = line.trim();
+
+          // Keep comments, but rewrite URI="..." inside them (#EXT-X-KEY, #EXT-X-MAP)
+          if (!trimmed || trimmed.startsWith('#')) {
+            return line.replace(/URI="([^"]+)"/g, (match, uri) => {
+              const absoluteUri = new URL(uri, baseUrl).href;
+              return `URI="${proxyBase}${encodeURIComponent(absoluteUri)}"`;
+            });
+          }
+
+          // It's a segment URL line
+          const absoluteUrl = new URL(trimmed, baseUrl).href;
+          return `${proxyBase}${encodeURIComponent(absoluteUrl)}`;
+        })
+        .join('\n');
+
+      res.setHeader('Content-Type', 'application/vnd.apple.mpegurl');
+      return res.send(rewritten);
+    }
+
+    // 8. HTML pages: inject <base> tag for relative URLs and rewrite absolute URLs
+    if (contentType.includes('text/html')) {
+      const text = await response.text();
+      const baseUrl = new URL(targetUrl);
+
+      // Fix relative URLs with <base href="...">
+      const basePath = baseUrl.href.substring(0, baseUrl.href.lastIndexOf('/') + 1);
+      const baseTag = `<base href="${basePath}">`;
+      let html = text.replace(/<head\b[^>]*>/i, (match) => `${match}\n${baseTag}`);
+
+      // Rewrite absolute URLs pointing to the same origin so they also go through proxy
+      const targetOrigin = baseUrl.origin;
+      const proto = req.headers['x-forwarded-proto'] || 'https';
+      const host = req.headers['host'];
+      const proxyBase = `${proto}://${host}/api/proxy?url=`;
+
+      const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const originRegex = new RegExp(
+        `\\b(src|href)\\s*=\\s*(["'])${escapeRegExp(targetOrigin)}/([^"']*)\\2`,
+        'gi'
+      );
+      html = html.replace(originRegex, (match, attr, quote, path) => {
+        return `${attr}=${quote}${proxyBase}${encodeURIComponent(targetOrigin + '/' + path)}${quote}`;
+      });
+
+      return res.send(html);
+    }
+
+    // 9. Binary content (video segments, images, etc.)
+    const buffer = Buffer.from(await response.arrayBuffer());
+    return res.send(buffer);
+
+  } catch (error) {
+    console.error('Proxy error:', error);
+    return res.status(500).json({ error: 'Proxy request failed', message: error.message });
+  }
+}
